@@ -8,9 +8,7 @@ on:
   workflow_dispatch:   # 👈 manual trigger
 
 jobs:
-  terraform-plan:
-    name: Terraform Plan
-    if: github.event_name == 'push'
+  terraform:
     runs-on: ubuntu-latest
 
     env:
