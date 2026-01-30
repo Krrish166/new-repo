@@ -1,0 +1,60 @@
+name: Terraform CI/CD (Plan Auto, Apply Manual)
+
+on:
+  push:
+    branches:
+      - main
+
+  workflow_dispatch:   # 👈 manual trigger
+
+jobs:
+  terraform-plan:
+    name: Terraform Plan
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: Terraform
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: 1.6.6
+
+      - name: Terraform Init
+        run: terraform init
+
+      - name: Terraform Validate
+        run: terraform validate
+
+      - name: Terraform Plan
+        run: terraform plan
+
+  terraform-apply:
+    name: Terraform Apply (Manual)
+    if: github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: Terraform
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: 1.6.6
+
+      - name: Terraform Init
+        run: terraform init
+
+      - name: Terraform Apply
+        run: terraform apply -auto-approve
